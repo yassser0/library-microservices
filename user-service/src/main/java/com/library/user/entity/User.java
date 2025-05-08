@@ -11,6 +11,7 @@ public class User {
 
     private String name;
     private String email;
+    private String password;
 
     // Constructeurs
     public User() {}
@@ -29,4 +30,11 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public Object getPassword() {
+    return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
