@@ -18,19 +18,23 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-   @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody User user) {
-    try {
-        User registered = userService.register(user);
-        return ResponseEntity.ok(registered);
-    } catch (RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        try {
+            User registered = userService.register(user);
+            return ResponseEntity.ok(registered);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
-}
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody User user) {
         Optional<User> existing = userService.login(user.getEmail(), user.getPassword());
-        return existing.isPresent() ? "Connexion réussie" : "Identifiants invalides";
+        if (existing.isPresent()) {
+            return ResponseEntity.ok("Connexion réussie");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
+        }
     }
 }
