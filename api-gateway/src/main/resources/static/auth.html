@@ -280,51 +280,76 @@
         const registerTab = document.getElementById('register-tab');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-        
-        loginTab.addEventListener('click', function() {
+    
+        loginTab.addEventListener('click', function () {
             loginTab.classList.add('active');
             registerTab.classList.remove('active');
             loginForm.classList.add('active');
             registerForm.classList.remove('active');
         });
-        
-        registerTab.addEventListener('click', function() {
+    
+        registerTab.addEventListener('click', function () {
             registerTab.classList.add('active');
             loginTab.classList.remove('active');
             registerForm.classList.add('active');
             loginForm.classList.remove('active');
         });
-        
-        // Validation des formulaires
-        const loginFormEl = loginForm.querySelector('form');
-        const registerFormEl = registerForm.querySelector('form');
-        
-        loginFormEl.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Ici, vous ajouteriez votre propre logique de connexion
-            console.log('Tentative de connexion avec:', email);
-            alert('Fonction de connexion à implémenter.');
-        });
-        
-        registerFormEl.addEventListener('submit', function(e) {
+    
+        const backendUrl = "http://localhost:8081/auth";
+    
+        // Inscription
+        document.querySelector('#register-form form').addEventListener('submit', async function (e) {
             e.preventDefault();
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
-            
+    
             if (password !== confirmPassword) {
-                alert('Les mots de passe ne correspondent pas.');
+                alert("Les mots de passe ne correspondent pas.");
                 return;
             }
-            
-            // Ici, vous ajouteriez votre propre logique d'inscription
-            console.log('Tentative d\'inscription avec:', email);
-            alert('Fonction d\'inscription à implémenter.');
+    
+            try {
+                const response = await fetch(`${backendUrl}/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password })
+                });
+    
+                if (response.ok) {
+                    alert("Inscription réussie !");
+                } else {
+                    const msg = await response.text();
+                    alert("Erreur lors de l'inscription : " + msg);
+                }
+            } catch (error) {
+                alert("Erreur réseau : " + error.message);
+            }
+        });
+    
+        // Connexion
+        document.querySelector('#login-form form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+    
+            try {
+                const response = await fetch(`${backendUrl}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+    
+                const msg = await response.text();
+                alert(msg);
+            } catch (error) {
+                alert("Erreur réseau : " + error.message);
+            }
         });
     </script>
+    
+    
+   
 </body>
 </html>
