@@ -11,12 +11,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Désactive CSRF pour les appels API
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth/**").permitAll() // Autorise l'accès aux routes /auth/*
+                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(basic -> basic.disable()) // Désactive l'authentification basique
-                .formLogin(login -> login.disable()); // Désactive le formulaire de login Spring par défaut
+                .httpBasic(basic -> basic.disable()) 
+                .formLogin(login -> login.disable());
 
         return http.build();
     }
