@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil - BiblioThèque</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --secondary: #10b981;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --white: #ffffff;
+      --gray-light: #f1f5f9;
+      --gray: #e2e8f0;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-light);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-outline {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background-color: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+    .profile-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+
+    .profile-sidebar {
+      background-color: var(--white);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .profile-menu {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+
+    .profile-menu-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      background-color: var(--gray-light);
+    }
+
+    .profile-menu-item.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .profile-content {
+      background-color: var(--white);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+
+    .profile-section {
+      display: none;
+    }
+
+    .profile-section.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray);
+      border-radius: 8px;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    footer {
+      background-color: var(--text-dark);
+      color: white;
+      padding: 2rem;
+      margin-top: auto;
+      text-align: center;
+    }
+    
+  </style>
+</head>
+<body>
+  <header>
+        <div class="header-container">
+            <a href="home.html" class="logo">Biblio<span>Thèque</span></a>
+            
+            <nav class="nav-links">
+                <a href="home.html" class="nav-link active">Accueil</a>
+                <a href=home.html#Fonctionnalités" class="nav-link">Fonctionnalités</a>
+                 <a href="livreDisponible.html" class="nav-link" >livres Disponibles</a>
+                  <a href="home.html#contact" class="nav-link" >Contact</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="auth.html" class="btn btn-outline">Connexion</a>
+                <a href="auth.html" class="btn btn-primary">S'inscrire</a>
+            </div>
+        </div>
+    </header>
+
+  <div class="profile-container">
+    <div class="profile-sidebar">
+      <div class="profile-name">Yassir Achour</div>
+      <div class="profile-email">yassirach17@gmail.com</div>
+      <ul class="profile-menu">
+        <li class="profile-menu-item active" data-section="infos">Informations personnelles</li>
+        <li class="profile-menu-item" data-section="password">Mot de passe</li>
+      </ul>
+    </div>
+
+    <div class="profile-content">
+      <div id="infos" class="profile-section active">
+        <h2>Informations personnelles </h2>
+        <form>
+          <div class="form-group">
+            <label class="form-label" for="nom">Nom complet</label>
+            <input type="text" id="nom" class="form-input" />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" id="email" class="form-input"/>
+          </div>
+          <button type="submit" class="btn">Enregistrer</button>
+        </form>
+      </div>
+
+      <div id="password" class="profile-section">
+        <h2>Changer le mot de passe</h2>
+        <form>
+          <div class="form-group">
+            <label class="form-label" for="current-password">Mot de passe actuel</label>
+            <input type="password" id="current-password" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password">Nouveau mot de passe</label>
+            <input type="password" id="new-password" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirm-password">Confirmer le mot de passe</label>
+            <input type="password" id="confirm-password" class="form-input" />
+          </div>
+          <button type="submit" class="btn">Mettre à jour</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 BiblioThèque. Tous droits réservés.
+  </footer>
+
+  <script>
+    document.querySelectorAll(".profile-menu-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".profile-menu-item").forEach((i) => i.classList.remove("active"));
+        item.classList.add("active");
+
+        const section = item.dataset.section;
+        document.querySelectorAll(".profile-section").forEach((s) => s.classList.remove("active"));
+        document.getElementById(section).classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
