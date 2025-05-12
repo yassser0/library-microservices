@@ -306,6 +306,67 @@
         document.getElementById(section).classList.add("active");
       });
     });
+     document.addEventListener('DOMContentLoaded', () => {
+    const backendUrl = "http://localhost:8081/users"; // API Gateway vers user-service
+
+    // Menu toggle
+    document.querySelectorAll(".profile-menu-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".profile-menu-item").forEach((i) => i.classList.remove("active"));
+        item.classList.add("active");
+
+        const section = item.dataset.section;
+        document.querySelectorAll(".profile-section").forEach((s) => s.classList.remove("active"));
+        document.getElementById(section).classList.add("active");
+      });
+    });
+
+    // Modifier informations personnelles
+    document.querySelector("#infos form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nom = document.getElementById("nom").value;
+      const email = document.getElementById("email").value;
+
+      const response = await fetch(`${backendUrl}/update-info`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nom, email: email })
+      });
+
+      if (response.ok) {
+        alert("Informations mises à jour !");
+      } else {
+        alert("Erreur lors de la mise à jour.");
+      }
+    });
+
+    // Modifier mot de passe
+    document.querySelector("#password form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const currentPassword = document.getElementById("current-password").value;
+      const newPassword = document.getElementById("new-password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      if (newPassword !== confirmPassword) {
+        alert("Les mots de passe ne correspondent pas.");
+        return;
+      }
+
+      const response = await fetch(`${backendUrl}/update-password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, currentPassword, newPassword })
+      });
+
+      if (response.ok) {
+        alert("Mot de passe mis à jour !");
+      } else {
+        const msg = await response.text();
+        alert("Erreur : " + msg);
+      }
+    });
+  });
   </script>
 </body>
 </html>

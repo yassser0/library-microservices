@@ -22,7 +22,6 @@ public class UserService {
             throw new RuntimeException("Cet email est déjà utilisé.");
         }
 
-        // Hash du mot de passe
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -30,10 +29,34 @@ public class UserService {
     public Optional<User> login(String email, String password) {
         Optional<User> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
-            // Comparaison entre le mot de passe brut et le mot de passe hashé
             boolean passwordMatch = passwordEncoder.matches(password, existingUser.get().getPassword());
             return passwordMatch ? existingUser : Optional.empty();
         }
         return Optional.empty();
+    }
+
+    // ✅ Mise à jour des informations (nom uniquement ici)
+    public Optional<User> updateUserInfo(String email, String newName) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(newName);
+            return Optional.of(userRepository.save(user));
+        }
+        return Optional.empty();
+    }
+
+    // ✅ Mise à jour du mot de passe avec vérification de l’ancien
+    public boolean updatePassword(String email, String currentPassword, String newPassword) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (passwordEncoder.matches(currentPassword, user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
     }
 }
