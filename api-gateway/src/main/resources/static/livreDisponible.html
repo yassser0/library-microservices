@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioThèque - Livres Disponibles</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --gray-light: #f1f5f9;
+            --gray: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--gray-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-outline {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background-color: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        
+        /* Page title section */
+        .page-title {
+            background: linear-gradient(45deg, rgba(29, 78, 216, 0.85), rgba(37, 99, 235, 0.9));
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        /* Search and filters section */
+        .search-section {
+            background-color: var(--white);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 180px;
+        }
+        
+        /* Books section */
+        .books-section {
+            padding: 3rem 2rem;
+        }
+        
+        .books-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .book-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .book-cover {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background-color: var(--gray);
+        }
+        
+        .book-details {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .book-author {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        
+        .book-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .book-category {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .book-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .book-available {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: auto;
+        }
+        
+        .book-unavailable {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: auto;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            gap: 0.5rem;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            background-color: var(--white);
+            color: var(--text-dark);
+            border: 1px solid var(--gray);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .page-btn.active {
+            background-color: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--white);
+            padding: 3rem 2rem;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 1rem;
+            }
+            
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-menu {
+                display: flex;
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                background-color: var(--white);
+                box-shadow: var(--shadow);
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">Biblio<span>Thèque</span></a>
+            
+            <nav class="nav-links">
+                <a href="home.html" class="nav-link">Accueil</a>
+
+                <a href="#Fonctionnalités" class="nav-link">Fonctionnalités</a>
+                <a href="#" class="nav-link active">Livres Disponibles</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="auth.html" class="btn btn-outline">Connexion</a>
+                <a href="auth.html" class="btn btn-primary">S'inscrire</a>
+            </div>
+            
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </header>
+    
+    <section class="page-title">
+        <h1>Livres Disponibles</h1>
+        <p>Découvrez notre collection diversifiée de livres disponibles à l'emprunt. Utilisez les filtres pour trouver facilement votre prochain livre.</p>
+    </section>
+    
+    <section class="search-section">
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" class="search-input" placeholder="Rechercher par titre, auteur ou ISBN...">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+            
+            <div class="filter-container">
+                <select class="filter-select">
+                    <option value="">Catégorie</option>
+                    <option value="roman">Roman</option>
+                    <option value="science-fiction">Science-Fiction</option>
+                    <option value="policier">Policier</option>
+                    <option value="biographie">Biographie</option>
+                    <option value="jeunesse">Jeunesse</option>
+                    <option value="manga">Manga</option>
+                    <option value="histoire">Histoire</option>
+                    <option value="science">Science</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option value="">Disponibilité</option>
+                    <option value="disponible">Disponible</option>
+                    <option value="emprunte">Emprunté</option>
+                    <option value="reserve">Réservé</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option value="">Année de publication</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="avant-2020">Avant 2020</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option value="">Trier par</option>
+                    <option value="titre-asc">Titre (A-Z)</option>
+                    <option value="titre-desc">Titre (Z-A)</option>
+                    <option value="auteur-asc">Auteur (A-Z)</option>
+                    <option value="auteur-desc">Auteur (Z-A)</option>
+                    <option value="date-asc">Date de publication (croissant)</option>
+                    <option value="date-desc">Date de publication (décroissant)</option>
+                    <option value="popularite">Popularité</option>
+                </select>
+            </div>
+        </div>
+    </section>
+    
+    <section class="books-section">
+        <div class="books-container">
+            <div class="books-grid">
+                <!-- Livre 1 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">Les Misérables</h3>
+                        <p class="book-author">Victor Hugo</p>
+                        <p class="book-description">Un chef-d'œuvre de la littérature française qui suit le parcours de Jean Valjean, un ancien forçat cherchant la rédemption.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Roman classique</span>
+                            <span class="book-available">Disponible</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Réserver</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 2 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">L'Étranger</h3>
+                        <p class="book-author">Albert Camus</p>
+                        <p class="book-description">Roman emblématique de l'absurde où Meursault, un homme indifférent au monde, commet un meurtre qui changera sa vie.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Roman philosophique</span>
+                            <span class="book-available">Disponible</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Réserver</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 3 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">Dune</h3>
+                        <p class="book-author">Frank Herbert</p>
+                        <p class="book-description">Chef-d'œuvre de science-fiction se déroulant sur la planète désertique Arrakis, seule source d'épice, la substance la plus précieuse de l'univers.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Science-Fiction</span>
+                            <span class="book-unavailable">Emprunté</span>
+                        </div>
+                        <a href="#" class="btn btn-outline">Rejoindre la liste d'attente</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 4 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">Le Petit Prince</h3>
+                        <p class="book-author">Antoine de Saint-Exupéry</p>
+                        <p class="book-description">Une œuvre poétique qui aborde les thèmes de l'amitié, de l'amour et du sens de la vie à travers le voyage d'un petit prince.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Conte philosophique</span>
+                            <span class="book-available">Disponible</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Réserver</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 5 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">Harry Potter à l'école des sorciers</h3>
+                        <p class="book-author">J.K. Rowling</p>
+                        <p class="book-description">Premier tome de la célèbre série suivant les aventures du jeune sorcier Harry Potter à Poudlard.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Fantasy</span>
+                            <span class="book-unavailable">Emprunté</span>
+                        </div>
+                        <a href="#" class="btn btn-outline">Rejoindre la liste d'attente</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 6 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">L'Art de la guerre</h3>
+                        <p class="book-author">Sun Tzu</p>
+                        <p class="book-description">Traité de stratégie militaire chinois datant du VIe siècle av. J.-C., applicable dans de nombreux domaines de la vie.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Philosophie</span>
+                            <span class="book-available">Disponible</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Réserver</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 7 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">Sapiens : Une brève histoire de l'humanité</h3>
+                        <p class="book-author">Yuval Noah Harari</p>
+                        <p class="book-description">Une exploration fascinante de l'histoire de l'humanité, de l'âge de pierre jusqu'à l'ère numérique.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Histoire</span>
+                            <span class="book-unavailable">Réservé</span>
+                        </div>
+                        <a href="#" class="btn btn-outline">Rejoindre la liste d'attente</a>
+                    </div>
+                </div>
+                
+                <!-- Livre 8 -->
+                <div class="book-card">
+                    <img src="/api/placeholder/250/300" alt="Couverture du livre" class="book-cover">
+                    <div class="book-details">
+                        <h3 class="book-title">Orgueil et Préjugés</h3>
+                        <p class="book-author">Jane Austen</p>
+                        <p class="book-description">Roman de mœurs décrivant les aventures des sœurs Bennet à l'époque de la Régence anglaise.</p>
+                        <div class="book-meta">
+                            <span class="book-category">Roman classique</span>
+                            <span class="book-available">Disponible</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Réserver</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn">></button>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>BiblioThèque</h3>
+                <ul class="footer-links">
+                    <li><a href="#prop">À propos de nous</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Produit</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Fonctionnalités</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Ressources</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Centre d'aide</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3 id="contact" >Contact</h3>
+                <ul class="footer-links">
+                    <li><a href="https://mail.google.com/mail/u/0/?ogbl&hl=fr#inbox?compose=new">yassirach17@gmail.com</a></li>
+                    <li><a href="https://wa.me/+212716972238" target="_blank" >+212716972238</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 BiblioThèque. Tous droits réservés.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Toggle mobile menu
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        const authButtons = document.querySelector('.auth-buttons');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+                authButtons.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.classList.add('mobile-menu');
+                authButtons.style.display = 'flex';
+                authButtons.classList.add('mobile-menu');
+            }
+        });
+    </script>
+</body>
+</html>
