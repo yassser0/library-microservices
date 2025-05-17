@@ -237,8 +237,9 @@
             </nav>
             
             <div class="auth-buttons">
-                <a href="auth.html" class="btn btn-outline">Connexion</a>
-                <a href="auth.html" class="btn btn-primary">S'inscrire</a>
+                <a href="auth.html" class="btn btn-outline" id="loginBtn">Connexion</a>
+                <a href="auth.html" class="btn btn-primary" id="registerBtn">S'inscrire</a>
+                <button class="btn btn-outline" id="logoutBtn" >Déconnexion</button>
             </div>
         </div>
     </header>
@@ -367,6 +368,48 @@
       }
     });
   });
+  // Check session on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch("http://localhost:8081/auth/check-session", {
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('registerBtn').style.display = 'none';
+        } else {
+            document.getElementById('logoutBtn').style.display = 'none';
+             document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('registerBtn').style.display = 'inline-block';
+        }
+    } catch (err) {
+        console.error("Erreur lors de la vérification de session", err);
+        document.getElementById('logoutBtn').style.display = 'none';
+         document.getElementById('loginBtn').style.display = 'inline-block';
+        document.getElementById('registerBtn').style.display = 'inline-block';
+    }
+});
+
+        // Logout button functionality
+        document.getElementById("logoutBtn").addEventListener("click", async function () {
+    try {
+        const response = await fetch("http://localhost:8081/auth/logout", {
+            method: "POST",
+            credentials: "include" // important pour envoyer les cookies de session
+        });
+
+        if (response.ok) {
+            alert("Déconnecté !");
+            window.location.href = "home.html"; // ou page d'accueil
+        } else {
+            alert("Erreur de déconnexion");
+        }
+    } catch (err) {
+        alert("Erreur réseau : " + err.message);
+    }
+});
   </script>
 </body>
 </html>

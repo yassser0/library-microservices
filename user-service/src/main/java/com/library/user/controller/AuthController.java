@@ -32,9 +32,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody User user,HttpSession session) {
         Optional<User> existing = userService.login(user.getEmail(), user.getPassword());
         if (existing.isPresent()) {
+            session.setAttribute("user", existing.get()); 
             return ResponseEntity.ok("Connexion réussie");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
