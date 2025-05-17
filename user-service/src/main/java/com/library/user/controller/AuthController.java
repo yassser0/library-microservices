@@ -4,6 +4,7 @@ import com.library.user.entity.User;
 import com.library.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,14 @@ public class AuthController {
 public ResponseEntity<String> logout(HttpServletRequest request) {
     request.getSession().invalidate();
     return ResponseEntity.ok("Déconnexion réussie");
+}
+@GetMapping("/check-session")
+public ResponseEntity<?> checkSession(HttpSession session) {
+    Object user = session.getAttribute("user");
+    if (user != null) {
+        return ResponseEntity.ok("connecté");
+    } else {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("non connecté");
+    }
 }
 }
