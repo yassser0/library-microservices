@@ -3,6 +3,8 @@ package com.library.user.controller;
 import com.library.user.entity.User;
 import com.library.user.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,4 +39,9 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
         }
     }
+    @PostMapping("/logout")
+public ResponseEntity<String> logout(HttpServletRequest request) {
+    request.getSession().invalidate();
+    return ResponseEntity.ok("Déconnexion réussie");
+}
 }
